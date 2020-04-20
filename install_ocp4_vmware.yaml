@@ -18,6 +18,7 @@
 
   vars:
     vcenter_hostname: 192.168.10.253
+    rhcos_template_upload: true # set to false if there's no need to create template
     rhcos_ova: "{{ ansible_env.HOME }}/rhcos-4.3.8-x86_64-vmware.x86_64.ova"
     template_rhcos: "RHCOS"
     vcenter_datacenter: "Datacenter"
@@ -231,6 +232,7 @@
      power_on: no
      validate_certs: no
      ovf: "{{ rhcos_ova }}"
+    when: rhcos_template_upload|bool
     tags:
       - vmware_template
 
@@ -248,6 +250,7 @@
      - label: "Network adapter 1"
        state: absent
     ignore_errors: true # nic may have already been removed
+    when: rhcos_template_upload|bool
     tags:
       - vmware_reconfigure
 
