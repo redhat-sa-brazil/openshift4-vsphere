@@ -18,6 +18,7 @@
 
   vars:
     vcenter_hostname: 192.168.10.253
+    rhcos_ova: "{{ ansible_env.HOME }}/rhcos-4.3.8-x86_64-vmware.x86_64.ova"
     template_rhcos: "RHCOS"
     vcenter_datacenter: "Datacenter"
     vcenter_network: "VM Network"
@@ -215,6 +216,40 @@
      folder_type: vm
      validate_certs: no
      state: present
+
+  - name: Create template VM
+    vmware_deploy_ovf:
+     allow_duplicates: false
+     hostname: '{{ vcenter_hostname }}'
+     username: '{{ vcenter_username }}'
+     password: '{{ vcenter_password }}'
+     datacenter: '{{ vcenter_datacenter }}'
+     cluster: '{{ vcenter_cluster }}'
+     folder: "{{ vcenter_datacenter }}/vm/{{ cluster_name }}"
+     datastore: "{{ vcenter_datastore }}"
+     name: "RHCOS"
+     power_on: no
+     validate_certs: no
+     ovf: "{{ rhcos_ova }}"
+    tags:
+      - vmware_template
+
+  - name: Remove NIC from template
+    vmware_guest_network:
+     hostname: '{{ vcenter_hostname }}'
+     username: '{{ vcenter_username }}'
+     password: '{{ vcenter_password }}'
+     datacenter: '{{ vcenter_datacenter }}'
+     cluster: '{{ vcenter_cluster }}'
+     folder: "{{ vcenter_datacenter }}/vm/{{ cluster_name }}"
+     validate_certs: no
+     name: "RHCOS"
+     networks:
+     - label: "Network adapter 1"
+       state: absent
+    ignore_errors: true # nic may have already been removed
+    tags:
+      - vmware_reconfigure
 
   - name: Create bootstrap VM
     import_role:
