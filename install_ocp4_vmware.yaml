@@ -227,7 +227,7 @@
      datacenter: '{{ vcenter_datacenter }}'
      folder: "{{ vcenter_datacenter }}/vm/{{ cluster_name }}"
      datastore: "{{ vcenter_datastore }}"
-     name: "RHCOS"
+     name: "{{ template_rhcos }}"
      power_on: no
      validate_certs: no
      ovf: "{{ rhcos_ova }}"
@@ -243,7 +243,7 @@
      datacenter: '{{ vcenter_datacenter }}'
      folder: "{{ vcenter_datacenter }}/vm/{{ cluster_name }}"
      validate_certs: no
-     name: "RHCOS"
+     name: "{{ template_rhcos }}"
      networks:
      - label: "Network adapter 1"
        state: absent
