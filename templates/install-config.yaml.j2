@@ -1,5 +1,11 @@
 apiVersion: v1
 baseDomain: {{ base_domain }}
+{% if ocp_http_proxy is defined %}
+proxy:
+  httpProxy: {{ ocp_http_proxy }}
+  httpsProxy: {{ ocp_http_proxy }}
+  noProxy: {{ ocp_noproxy|default(base_domain) }}
+{% endif %}
 compute:
 - hyperthreading: Enabled
   name: worker

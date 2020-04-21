@@ -1,9 +1,5 @@
 - hosts: localhost
   vars_prompt:
-    - name: cluster_name
-      prompt: "Cluster name"
-      private: no
-
     - name: vcenter_username
       prompt: "VCenter Username"
       private: no
@@ -12,18 +8,6 @@
       prompt: "VCenter Password"
       private: yes
 
-    - name: pull_secret
-      prompt: "Openshift Pull Secret"
-      private: yes
-
-  vars:
-    vcenter_hostname: 192.168.10.253
-    template_rhcos: "RHCOS"
-    vcenter_datacenter: "Datacenter"
-    vcenter_network: "VM Network"
-    vcenter_datastore: "datastore4t"
-    base_domain: "bsb.openshiftdemo.com.br"
-    dns_server_address: 192.168.10.1
   tasks:
   ########### Bastion Tasks #############
 
