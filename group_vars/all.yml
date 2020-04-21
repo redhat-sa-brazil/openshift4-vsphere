@@ -1,0 +1,16 @@
+---
+# if proxy isn't needed, comment out ocp_http_proxy and ocp_noproxy
+ocp_http_proxy: http://10.0.0.5:3128
+ocp_noproxy: vcenter.example.com,.example.com,169.254.169.254,10.0.0.0/16
+rhcos_ova: "{{ ansible_env.HOME }}/rhcos-4.3.8-x86_64-vmware.x86_64.ova"
+dns_server_address: 10.0.0.60
+vcenter_hostname: vcenter.example.com
+template_rhcos: "RHCOS"
+vcenter_datacenter: "Datacenter"
+#vcenter_cluster: "Test Cluster" #NOTE: for future use
+vcenter_network: "VM Network"
+vcenter_datastore: ocp
+base_domain: "example.com"
+cluster_name: ocp
+pull_secret: '<REDACTED>'
+
