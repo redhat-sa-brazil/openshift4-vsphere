@@ -225,7 +225,6 @@
      username: '{{ vcenter_username }}'
      password: '{{ vcenter_password }}'
      datacenter: '{{ vcenter_datacenter }}'
-     cluster: '{{ vcenter_cluster }}'
      folder: "{{ vcenter_datacenter }}/vm/{{ cluster_name }}"
      datastore: "{{ vcenter_datastore }}"
      name: "RHCOS"
@@ -242,7 +241,6 @@
      username: '{{ vcenter_username }}'
      password: '{{ vcenter_password }}'
      datacenter: '{{ vcenter_datacenter }}'
-     cluster: '{{ vcenter_cluster }}'
      folder: "{{ vcenter_datacenter }}/vm/{{ cluster_name }}"
      validate_certs: no
      name: "RHCOS"
