@@ -247,3 +247,60 @@
       vm_mac: "00:50:56:a7:95:b{{ item }}"
       ignition_config_data: "{{lookup('file', '{{ playbook_dir }}/{{ cluster_name }}/worker.64') }}"
     with_sequence: start=0 end=1
+ 
+  - name: Wait for bootstrapping to complete
+    shell: "openshift-install --dir={{ playbook_dir }}/{{ cluster_name }} wait-for bootstrap-complete"
+    register: bootstrap_status
+    notify:
+      - Check if bootstrap node is up
+      - Shutdown bootstrap node
+    tags:
+      - wait_for_bootstrap
+      - wait_for
+
+  - debug:
+      msg: "{{ bootstrap_status.stderr_lines }}"
+    tags:
+      - wait_for_bootstrap
+      - wait_for
+
+  - name: Run handlers
+    meta: flush_handlers
+
+  - name: Wait for installation to complete
+    shell: "openshift-install --dir={{ playbook_dir }}/{{ cluster_name }} wait-for install-complete"
+    register: install_status
+    tags:
+      - wait_for_install
+      - wait_for
+
+  - debug:
+      msg: "{{ install_status.stderr_lines }}"
+    tags:
+      - wait_for_install
+      - wait_for
+
+  handlers:
+    - name: Check if bootstrap node is up
+      vmware_guest_info:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        datacenter: '{{ vcenter_datacenter }}'
+        name: '{{ bootstrap_vm }}'
+        properties: ["overallStatus","runtime"]
+        validate_certs: no
+        schema: vsphere
+      register: bootstrap_info
+
+    - name: Shutdown bootstrap node
+      vmware_guest:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        datacenter: '{{ vcenter_datacenter }}'
+        name: '{{ bootstrap_vm }}'
+        state: shutdownguest
+        validate_certs: no
+      when: bootstrap_info.instance.runtime.powerState == 'poweredOn'
+
